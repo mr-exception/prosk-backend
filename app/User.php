@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
+use Request;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -21,5 +22,8 @@ class User extends Authenticatable
     protected $table = 'users';
     public function tasks(){
         return $this->hasMany('App\model\Task');
+    }
+    public static function get(){
+        return User::where('token', Request::header('token'))->first();
     }
 }
