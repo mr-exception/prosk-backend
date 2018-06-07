@@ -5,11 +5,13 @@ namespace App;
 class Errors
 {
     public static function generate($codes){
-        return [
-            [
-                "code" => 1001,
-                "message" => "token not found",
-            ]
-        ];
+        $errors = [];
+        foreach($codes as $code){
+            array_push($errors, [
+                "code"      => $code,
+                "message"   => config('errors.' . $code)
+            ]);
+        }
+        return $errors;
     }
 }
