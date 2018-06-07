@@ -4,8 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Errors;
+
 class TokenController extends Controller
 {
+    /**
+     * generates a new token for new users
+     */
     public function generate(Request $request){
         $token = $this->generateRandomString();
         while(true){
@@ -20,7 +25,9 @@ class TokenController extends Controller
             'user'  => $user
         ];
     }
-
+    /**
+     * checks if entered token exists
+     */
     public function check(Request $request){
         $user = User::where('token', $request->token)->first();
         if($user)
@@ -30,8 +37,9 @@ class TokenController extends Controller
             ];
         else
             return [
-                'ok'    => false,
-                'token' => $request->token
+                'ok'        => false,
+                'token'     => $request->token,
+                'errors'    => Errors::generate([10001])
             ];
     }
 
