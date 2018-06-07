@@ -39,7 +39,7 @@ class TokenController extends Controller
             return [
                 'ok'        => false,
                 'token'     => $request->token,
-                'errors'    => Errors::generate([10001])
+                'errors'    => Errors::generate([1001])
             ];
     }
 
