@@ -81,7 +81,12 @@ class TaskController extends Controller
         ];
     }
     public function delete(Task $task){
-        return 'delete';
+        if($task->user_id != User::get()->id)
+            return abort(403);
+        $task->delete();
+        return[
+            'ok'    => true
+        ];
     }
 
     public function validateTask(Request $request){
