@@ -28,3 +28,7 @@ Route::prefix('task')->middleware('CheckToken')->group(function(){
     Route::put(     '/{task}',      'TaskController@update');
     Route::delete(  '/{task}',      'TaskController@delete');
 });
+
+Route::prefix('tag')->middleware('CheckToken')->group(function(){
+    Route::post(    '/{task}',      'TagController@create');
+});
