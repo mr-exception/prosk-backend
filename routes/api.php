@@ -22,7 +22,7 @@ Route::prefix('token')->group(function(){
     Route::post('generate', 'TokenController@generate');
 });
 
-Route::prefix('task')->group(function(){
+Route::prefix('task')->middleware('CheckToken')->group(function(){
     Route::post(    '/',            'TaskController@create');
     Route::get(     '/',            'TaskController@retrive');
     Route::put(     '/{task}',      'TaskController@update');
