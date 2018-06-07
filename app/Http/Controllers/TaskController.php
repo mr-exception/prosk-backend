@@ -29,7 +29,46 @@ class TaskController extends Controller
         }
     }
     public function retrive(Request $request){
-        return 'retrive';
+        $tasks = User::get()->tasks();
+
+        if($request->has('started_min'))
+            $tasks = $tasks->where('started_at', '>', $request->input('started_min'));
+        if($request->has('started_max'))
+            $tasks = $tasks->where('started_at', '<', $request->input('started_max'));
+        
+        if($request->has('finished_min'))
+            $tasks = $tasks->where('finished_at', '>', $request->input('finished_min'));
+        if($request->has('finished_max'))
+            $tasks = $tasks->where('finished_at', '<', $request->input('finished_max'));
+        
+        if($request->has('start_min'))
+            $tasks = $tasks->where('start_time', '>', $request->input('start_min'));
+        if($request->has('start_max'))
+            $tasks = $tasks->where('start_time', '<', $request->input('start_max'));
+        
+        if($request->has('finish_min'))
+            $tasks = $tasks->where('finish_time', '>', $request->input('finish_min'));
+        if($request->has('finish_max'))
+            $tasks = $tasks->where('finish_time', '<', $request->input('finish_max'));
+        
+        if($request->has('status'))
+            $tasks = $tasks->where('status', $request->status);
+        
+        if($request->has('poritory'))
+            $tasks = $tasks->where('poritory', $request->poritory);
+        
+        if($request->has('poritory_min'))
+            $tasks = $tasks->where('poritory', '>', $request->input('poritory_min'));
+        if($request->has('poritory_max'))
+            $tasks = $tasks->where('poritory', '<', $request->input('poritory_max'));
+        
+        if($request->has('title'))
+            $tasks = $tasks->where('title', 'LIKE', '%'. $request->title .'%');
+        if($request->has('description'))
+            $tasks = $tasks->where('description', 'LIKE', '%'. $request->description .'%');
+        
+        $tasks = $tasks->get();
+        return $tasks;
     }
     public function update(Task $task){
         return 'update';
