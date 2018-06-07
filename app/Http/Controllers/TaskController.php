@@ -70,8 +70,15 @@ class TaskController extends Controller
         $tasks = $tasks->get();
         return $tasks;
     }
-    public function update(Task $task){
-        return 'update';
+    public function update(Request $request, Task $task){
+        if($task->user_id != User::get()->id)
+            return abort(403);
+        $task->fill($request->all());
+        $task->save();
+        return [
+            'ok'    => true,
+            'task'  => $task
+        ];
     }
     public function delete(Task $task){
         return 'delete';
