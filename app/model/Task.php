@@ -16,4 +16,7 @@ class Task extends Model
     public function tags(){
         return $this->hasMany('App\model\Tag');
     }
+    public function update_times(){
+        die(var_dump($this->tracks));
+    }
 }
