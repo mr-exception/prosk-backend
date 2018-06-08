@@ -13,6 +13,40 @@ use App\User;
 
 class TrackController extends Controller
 {
+    public function retrive(Request $request){
+        $tracks = User::get()->tracks();
+        
+        if($request->has('task_id'))
+            $tracks = $tracks->where($request->input('task_id'));
+
+        if($request->has('started_min'))
+            $tracks = $tracks->where('started_at', '>', $request->input('started_min'));
+        if($request->has('started_max'))
+            $tracks = $tracks->where('started_at', '<', $request->input('started_max'));
+        
+        if($request->has('finished_min'))
+            $tracks = $tracks->where('finished_at', '>', $request->input('finished_min'));
+        if($request->has('finished_max'))
+            $tracks = $tracks->where('finished_at', '<', $request->input('finished_max'));
+        
+        if($request->has('description'))
+            $tracks = $tracks->where('description', 'LIKE', '%'. $request->description .'%');
+        
+        if($request->has('offset'))
+            $tracks = $tracks->skip($request->offset);
+        else
+            $tracks = $tracks->skip(0);
+        
+        if($request->has('limit'))
+            $tracks = $tracks->limit($request->limit);
+        else
+            $tracks = $tracks->limit(10);
+        
+        $tracks = $tracks->get();
+        for($i=0; $i<sizeof($tracks); $i++)
+            $tracks[$i]->task = $tracks[$i]->task;
+        return $tracks;
+    }
     public function start(Request $request, Task $task){
         if($task->user_id != User::get()->id)
             return abort(403);
@@ -110,10 +144,36 @@ class TrackController extends Controller
         }
     }
     public function update(Request $request, Track $track){
-
+        if($track->task->user_id != User::get()->id)
+            return abort(403);
+        $track->fill($request->all());
+        $track->duration = strtotime($track->finished_at) - strtotime($track->started_at);
+        if($track->duration < 0)
+            return [
+                'ok'        => false,
+                'errors'    => [
+                    ['code' => 1000, 'message' => 'started_at must be less than finished_at']
+                ]
+            ];
+        if(User::get()->validateTrackTime($track->started_at, $track->finished_at, $track->id))
+            return [
+                'ok'        => false,
+                'errors'    => Errors::generate([1002])
+            ];
+        $track->save();
+        $track->task->update_times();
+        return [
+            'ok'        => true,
+            'track'     => $track,
+        ];
     }
     public function delete(Track $track){
-
+        if($track->task->user_id != User::get()->id)
+            return abort(403);
+        $track->delete();
+        return[
+            'ok'    => true
+        ];
     }
 
     private function validateInsertedTask(Request $request){

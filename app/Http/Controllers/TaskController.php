@@ -72,6 +72,16 @@ class TaskController extends Controller
         if($request->has('description'))
             $tasks = $tasks->where('description', 'LIKE', '%'. $request->description .'%');
         
+        if($request->has('offset'))
+            $tasks = $tasks->skip($request->offset);
+        else
+            $tasks = $tasks->skip(0);
+        
+        if($request->has('limit'))
+            $tasks = $tasks->limit($request->limit);
+        else
+            $tasks = $tasks->limit(10);
+        
         $tasks = $tasks->get();
         for($i=0; $i<sizeof($tasks); $i++)
             $tasks[$i]->tags = $tasks[$i]->tags;

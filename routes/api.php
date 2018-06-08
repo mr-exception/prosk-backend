@@ -37,6 +37,7 @@ Route::prefix('track')->middleware('CheckToken')->group(function(){
     Route::post     ('/start/{task}',   'TrackController@start');
     Route::post     ('/finish/{track}', 'TrackController@finish');
     Route::post     ('/insert/{task}',  'TrackController@insert');
-    Route::put      ('/update/{track}', 'TrackController@update');
-    Route::delete   ('/delete/{track}', 'TrackController@delete');
+    Route::put      ('/{track}',        'TrackController@update');
+    Route::delete   ('/{track}',        'TrackController@delete');
+    Route::get      ('/',               'TrackController@retrive');
 });

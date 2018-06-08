@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Request;
+use App\model\Track;
 use DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -23,6 +24,12 @@ class User extends Authenticatable
     protected $table = 'users';
     public function tasks(){
         return $this->hasMany('App\model\Task');
+    }
+
+    public function tracks(){
+        return Track::whereHas('task', function($query){
+            $query->where('user_id', $this->id);
+        });
     }
     public static function get(){
         return User::where('token', Request::header('token'))->first();
