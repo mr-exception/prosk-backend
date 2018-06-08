@@ -158,6 +158,17 @@ class TaskController extends Controller
         ];
     }
 
+    public function finish(Task $task){
+        if($task->user_id != User::get()->id)
+            return abort(403);
+        $task->status = Task::STATUS_FINISHED;
+        $task->save();
+        return [
+            'ok'    => true,
+            'task'  => $task
+        ];
+    }
+
     public function validateTask(Request $request){
         $validation =  Validator::make($request->all(), [
             'title'         => 'required|string',

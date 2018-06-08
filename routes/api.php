@@ -49,6 +49,6 @@ Route::prefix('track')->middleware('CheckToken')->group(function(){
 
     Route::get      ('/',               'TrackController@retrive');
     Route::get      ('/count',          'TrackController@count');
-    
+
     Route::get      ('/sum',            'TrackController@sum');
 });

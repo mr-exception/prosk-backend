@@ -10,6 +10,9 @@ class Task extends Model
     protected $table = 'tasks';
     protected $fillable = ['title', 'description', 'user_id', 'start_time', 'finish_time', 'started_at', 'finished_at', 'status', 'poritory'];
 
+    const STATUS_ACTIVE     = 1;
+    const STATUS_DOING      = 2;
+    const STATUS_FINISHED   = 3;
     public function tracks(){
         return $this->hasMany('App\model\Track');
     }
@@ -23,6 +26,7 @@ class Task extends Model
     public function update_times(){
         $first_track = $this->tracks()->orderBy('started_at', 'ASC')->first();
         $this->started_at = $first_track->started_at;
+        $task->status = Task::STATUS_DOING;
         $this->save();
     }
 }
