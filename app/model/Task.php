@@ -16,7 +16,13 @@ class Task extends Model
     public function tags(){
         return $this->hasMany('App\model\Tag');
     }
+
+    /**
+     * updated the start time for a task, finds the started at variable
+     */
     public function update_times(){
-        die(var_dump($this->tracks));
+        $first_track = $this->tracks()->orderBy('started_at', 'ASC')->first();
+        $this->started_at = $first_track->started_at;
+        $this->save();
     }
 }

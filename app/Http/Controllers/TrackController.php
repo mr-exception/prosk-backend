@@ -29,13 +29,20 @@ class TrackController extends Controller
             $inputs = $request->all();
             $inputs['task_id'] = $task->id;
             $inputs['duration'] = strtotime($inputs['finished_at']) - strtotime($inputs['started_at']);
-            if($this->validateTrackTime($inputs['started_at'], $inputs['finished_at']))
+            if($inputs['duration'] < 0)
+                return [
+                    'ok'        => false,
+                    'errors'    => [
+                        ['code' => 1000, 'message' => 'started_at must be less than finished_at']
+                    ]
+                ];
+            if(User::get()->validateTrackTime($inputs['started_at'], $inputs['finished_at']))
                 return [
                     'ok'        => false,
                     'errors'    => Errors::generate([1002])
                 ];
             $track = Track::create($inputs);
-            // $task->update_times();
+            $task->update_times();
             return [
                 'ok'        => true,
                 'track'     => $track,
@@ -54,19 +61,6 @@ class TrackController extends Controller
 
     }
 
-    public function validateTrackTime($started_at, $finished_at){
-        $tracks = DB::table('tracks')->join('tasks', 'tasks.id', '=', 'tracks.task_id')
-            ->select('tracks.*', 'tasks.user_id')
-            ->whereRaw("
-                    ((tracks.started_at <= '$started_at' AND tracks.finished_at >= '$started_at') OR
-                    (tracks.started_at <= '$finished_at' AND tracks.finished_at >= '$finished_at') OR
-                    (tracks.started_at <= '$started_at' AND tracks.finished_at >= '$finished_at') OR
-                    (tracks.started_at >= '$started_at' AND tracks.finished_at <= '$finished_at')
-                    ) AND tasks.user_id = ".User::get()->id."
-                ")
-            ->get();
-        return sizeof($tracks);
-    }
     public function validateInsertedTask(Request $request){
         $validation =  Validator::make($request->all(), [
             'description'   => 'required|string',
