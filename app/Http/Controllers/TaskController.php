@@ -161,11 +161,23 @@ class TaskController extends Controller
     public function finish(Task $task){
         if($task->user_id != User::get()->id)
             return abort(403);
+        $first_track = $task->tracks()->orderBy('finished_at', 'ASC')->first();
+        $task->finished_at = $first_track->finished_at;
         $task->status = Task::STATUS_FINISHED;
         $task->save();
         return [
             'ok'    => true,
             'task'  => $task
+        ];
+    }
+
+    public function sum(Request $request){
+        $count = Task::
+                    where('started_at', '>', gmdate('Y-m-d H:i:s', time() - $request->input('offset', 60*60*24*7)))
+                    ->count();
+        return [
+            'ok'    => true,
+            'count' => $count
         ];
     }
 

@@ -31,8 +31,9 @@ Route::prefix('task')->middleware('CheckToken')->group(function(){
     Route::put      ('/{task}',         'TaskController@update');
     Route::delete   ('/{task}',         'TaskController@delete');
 
-    Route::post     ('/doing/{task}',   'TaskController@doing');
     Route::post     ('/finish/{task}',  'TaskController@finish');
+
+    Route::get      ('/sum',            'TaskController@sum');
 });
 
 Route::prefix('tag')->middleware('CheckToken')->group(function(){
