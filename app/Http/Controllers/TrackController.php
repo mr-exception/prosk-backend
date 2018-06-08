@@ -14,8 +14,33 @@ use App\User;
 class TrackController extends Controller
 {
     public function start(Request $request, Task $task){
+        if($task->user_id != User::get()->id)
+            return abort(403);
 
-        return $task;
+        $validation = $this->validateStartedTask($request);
+        if(!$validation){
+            $inputs = $request->all();
+            $inputs['task_id'] = $task->id;
+            $inputs['finished_at'] = null;
+            $inputs['duration'] = null;
+            
+            if(User::get()->validateTrackStartTime($inputs['started_at']))
+                return [
+                    'ok'        => false,
+                    'errors'    => Errors::generate([1002])
+                ];
+            $track = Track::create($inputs);
+            $task->update_times();
+            return [
+                'ok'        => true,
+                'track'     => $track,
+            ];
+        }else{
+            return [
+                'ok'        => false,
+                'errors'    => $validation
+            ];
+        }
     }
     public function finish(Request $request, Track $track){
 
@@ -61,12 +86,24 @@ class TrackController extends Controller
 
     }
 
-    public function validateInsertedTask(Request $request){
-        $validation =  Validator::make($request->all(), [
+    private function validateInsertedTask(Request $request){
+        $validation = Validator::make($request->all(), [
             'description'   => 'required|string',
             'started_at'    => 'required|date',
             'finished_at'   => 'required|date',
         ]);
+        return $this->validationResponse($validation);
+    }
+
+    private function validateStartedTask(Request $request){
+        $validation = Validator::make($request->all(), [
+            'description'   => 'required|string',
+            'started_at'    => 'required|date',
+        ]);
+        return $this->validationResponse($validation);
+    }
+
+    private function validationResponse($validation){
         if($validation->fails()){
             $errors = [];
             foreach($validation->errors()->all() as $message){
