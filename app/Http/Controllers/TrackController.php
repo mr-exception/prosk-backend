@@ -23,7 +23,7 @@ class TrackController extends Controller
             $inputs['task_id'] = $task->id;
             $inputs['finished_at'] = null;
             $inputs['duration'] = null;
-            
+
             if(User::get()->validateTrackStartTime($inputs['started_at']))
                 return [
                     'ok'        => false,
@@ -44,6 +44,36 @@ class TrackController extends Controller
     }
     public function finish(Request $request, Track $track){
 
+        $validation = $this->validateFinishedTask($request);
+        if(!$validation){
+            $inputs = $request->all();
+            $track->finished_at = $inputs['finished_at'];
+            
+            $track->duration = strtotime($track->finished_at) - strtotime($track->started_at);
+            if($track->duration < 0)
+                return [
+                    'ok'        => false,
+                    'errors'    => [
+                        ['code' => 1000, 'message' => 'started_at must be less than finished_at']
+                    ]
+                ];
+            if(User::get()->validateTrackTime($track->started_at, $track->finished_at, $track->id))
+                return [
+                    'ok'        => false,
+                    'errors'    => Errors::generate([1002])
+                ];
+            $track->save();
+            // $task->update_times();
+            return [
+                'ok'        => true,
+                'track'     => $track,
+            ];
+        }else{
+            return [
+                'ok'        => false,
+                'errors'    => $validation
+            ];
+        }
     }
     public function insert(Request $request, Task $task){
         if($task->user_id != User::get()->id)
@@ -99,6 +129,12 @@ class TrackController extends Controller
         $validation = Validator::make($request->all(), [
             'description'   => 'required|string',
             'started_at'    => 'required|date',
+        ]);
+        return $this->validationResponse($validation);
+    }
+    private function validateFinishedTask(Request $request){
+        $validation = Validator::make($request->all(), [
+            'finished_at'   => 'required|date',
         ]);
         return $this->validationResponse($validation);
     }

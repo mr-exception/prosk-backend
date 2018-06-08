@@ -28,7 +28,7 @@ class User extends Authenticatable
         return User::where('token', Request::header('token'))->first();
     }
 
-    public function validateTrackTime($started_at, $finished_at){
+    public function validateTrackTime($started_at, $finished_at, $track_id=0){
         $tracks = DB::table('tracks')->join('tasks', 'tasks.id', '=', 'tracks.task_id')
             ->select('tracks.*', 'tasks.user_id')
             ->whereRaw("
@@ -37,6 +37,7 @@ class User extends Authenticatable
                     (tracks.started_at <= '$started_at' AND tracks.finished_at >= '$finished_at') OR
                     (tracks.started_at >= '$started_at' AND tracks.finished_at <= '$finished_at')
                     ) AND tasks.user_id = ".$this->id."
+                    AND tracks.id <> $track_id
                 ")
             ->get();
         return sizeof($tracks);
@@ -47,6 +48,7 @@ class User extends Authenticatable
             ->whereRaw("
                     (tracks.started_at <= '$started_at' AND tracks.finished_at >= '$started_at')
                     AND tasks.user_id = ".$this->id."
+                    AND tracks.id <> $track_id
                 ")
             ->get();
         return sizeof($tracks);
