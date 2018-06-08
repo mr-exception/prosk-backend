@@ -31,6 +31,11 @@ class TaskController extends Controller
     public function retrive(Request $request){
         $tasks = User::get()->tasks();
 
+        if($request->has('tags'))
+            $tasks = $tasks->whereHas('tags', function($query){
+                global $request;
+                $query->whereIn('title', $request->tags);
+            });
         if($request->has('started_min'))
             $tasks = $tasks->where('started_at', '>', $request->input('started_min'));
         if($request->has('started_max'))
@@ -68,6 +73,8 @@ class TaskController extends Controller
             $tasks = $tasks->where('description', 'LIKE', '%'. $request->description .'%');
         
         $tasks = $tasks->get();
+        for($i=0; $i<sizeof($tasks); $i++)
+            $tasks[$i]->tags = $tasks[$i]->tags;
         return $tasks;
     }
     public function update(Request $request, Task $task){
