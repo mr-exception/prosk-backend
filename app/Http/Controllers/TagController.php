@@ -30,4 +30,17 @@ class TagController extends Controller
             'task'  => $task
         ];
     }
+
+    public function retrive(Request $request){
+        $tags = Tag::whereHas('task', function($query){
+            return $query->where('user_id', User::get()->id);
+        });
+        if($request->has('title'))
+            $tags = $tags->where('title', 'LIKE', '%'. $request->title .'%');
+        $results = [];
+        foreach($tags->get() as $tag)
+            if(!in_array($tag, $results))
+                array_push($results, $tag->title);
+        return $results;
+    }
 }

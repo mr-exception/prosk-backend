@@ -31,6 +31,7 @@ Route::prefix('task')->middleware('CheckToken')->group(function(){
 
 Route::prefix('tag')->middleware('CheckToken')->group(function(){
     Route::post     ('/{task}',         'TagController@create');
+    Route::get      ('/',               'TagController@retrive');
 });
 
 Route::prefix('track')->middleware('CheckToken')->group(function(){
