@@ -24,9 +24,15 @@ Route::prefix('token')->group(function(){
 
 Route::prefix('task')->middleware('CheckToken')->group(function(){
     Route::post     ('/',               'TaskController@create');
+    
     Route::get      ('/',               'TaskController@retrive');
+    Route::get      ('/count',          'TaskController@count');
+    
     Route::put      ('/{task}',         'TaskController@update');
     Route::delete   ('/{task}',         'TaskController@delete');
+
+    Route::post     ('/doing/{task}',   'TaskController@doing');
+    Route::post     ('/finish/{task}',  'TaskController@finish');
 });
 
 Route::prefix('tag')->middleware('CheckToken')->group(function(){
@@ -40,5 +46,9 @@ Route::prefix('track')->middleware('CheckToken')->group(function(){
     Route::post     ('/insert/{task}',  'TrackController@insert');
     Route::put      ('/{track}',        'TrackController@update');
     Route::delete   ('/{track}',        'TrackController@delete');
+
     Route::get      ('/',               'TrackController@retrive');
+    Route::get      ('/count',          'TrackController@count');
+    
+    Route::get      ('/sum',            'TrackController@sum');
 });

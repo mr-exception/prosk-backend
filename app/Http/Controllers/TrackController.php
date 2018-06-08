@@ -47,6 +47,30 @@ class TrackController extends Controller
             $tracks[$i]->task = $tracks[$i]->task;
         return $tracks;
     }
+    public function count(Request $request){
+        $tracks = User::get()->tracks();
+        
+        if($request->has('task_id'))
+            $tracks = $tracks->where($request->input('task_id'));
+
+        if($request->has('started_min'))
+            $tracks = $tracks->where('started_at', '>', $request->input('started_min'));
+        if($request->has('started_max'))
+            $tracks = $tracks->where('started_at', '<', $request->input('started_max'));
+        
+        if($request->has('finished_min'))
+            $tracks = $tracks->where('finished_at', '>', $request->input('finished_min'));
+        if($request->has('finished_max'))
+            $tracks = $tracks->where('finished_at', '<', $request->input('finished_max'));
+        
+        if($request->has('description'))
+            $tracks = $tracks->where('description', 'LIKE', '%'. $request->description .'%');
+        
+        return [
+            'ok'    => true,
+            'count' => $tracks->count()
+        ];
+    }
     public function start(Request $request, Task $task){
         if($task->user_id != User::get()->id)
             return abort(403);
