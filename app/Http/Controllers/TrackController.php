@@ -200,6 +200,17 @@ class TrackController extends Controller
         ];
     }
 
+
+    public function sum(Request $request){
+        $count = Track::
+                    where('started_at', '>', gmdate('Y-m-d H:i:s', time() - $request->input('offset', 60*60*24*7)))
+                    ->count();
+        return [
+            'ok'    => true,
+            'count' => $count
+        ];
+    }
+
     private function validateInsertedTask(Request $request){
         $validation = Validator::make($request->all(), [
             'description'   => 'required|string',
