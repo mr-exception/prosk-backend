@@ -94,10 +94,7 @@ class TrackController extends Controller
                 'track'     => $track,
             ];
         }else{
-            return [
-                'ok'        => false,
-                'errors'    => $validation
-            ];
+            return $validation;
         }
     }
     public function finish(Request $request, Track $track){
@@ -108,13 +105,6 @@ class TrackController extends Controller
             $track->finished_at = $inputs['finished_at'];
             
             $track->duration = strtotime($track->finished_at) - strtotime($track->started_at);
-            if($track->duration < 0)
-                return [
-                    'ok'        => false,
-                    'errors'    => [
-                        ['code' => 1000, 'message' => 'started_at must be less than finished_at']
-                    ]
-                ];
             if(User::get()->validateTrackTime($track->started_at, $track->finished_at, $track->id))
                 return [
                     'ok'        => false,
@@ -127,10 +117,7 @@ class TrackController extends Controller
                 'track'     => $track,
             ];
         }else{
-            return [
-                'ok'        => false,
-                'errors'    => $validation
-            ];
+            return $validation;
         }
     }
     public function insert(Request $request, Task $task){
@@ -161,10 +148,7 @@ class TrackController extends Controller
                 'track'     => $track,
             ];
         }else{
-            return [
-                'ok'        => false,
-                'errors'    => $validation
-            ];
+            return $validation;
         }
     }
     public function update(Request $request, Track $track){
@@ -172,13 +156,6 @@ class TrackController extends Controller
             return abort(403);
         $track->fill($request->all());
         $track->duration = strtotime($track->finished_at) - strtotime($track->started_at);
-        if($track->duration < 0)
-            return [
-                'ok'        => false,
-                'errors'    => [
-                    ['code' => 1000, 'message' => 'started_at must be less than finished_at']
-                ]
-            ];
         if(User::get()->validateTrackTime($track->started_at, $track->finished_at, $track->id))
             return [
                 'ok'        => false,
@@ -215,7 +192,7 @@ class TrackController extends Controller
         $validation = Validator::make($request->all(), [
             'description'   => 'required|string',
             'started_at'    => 'required|date',
-            'finished_at'   => 'required|date',
+            'finished_at'   => 'required|date|after:started_at',
         ]);
         return $this->validationResponse($validation);
     }
