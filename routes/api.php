@@ -22,7 +22,7 @@ Route::prefix('token')->group(function(){
     Route::post     ('generate',        'TokenController@generate');
 });
 
-Route::prefix('task')->middleware('CheckToken')->group(function(){
+Route::prefix('task')->middleware(['CheckToken', 'cors'])->group(function(){
     Route::post     ('/',               'TaskController@create');
     
     Route::get      ('/',               'TaskController@retrive');
@@ -36,12 +36,12 @@ Route::prefix('task')->middleware('CheckToken')->group(function(){
     Route::get      ('/sum',            'TaskController@sum');
 });
 
-Route::prefix('tag')->middleware('CheckToken')->group(function(){
+Route::prefix('tag')->middleware(['CheckToken', 'cors'])->group(function(){
     Route::post     ('/{task}',         'TagController@create');
     Route::get      ('/',               'TagController@retrive');
 });
 
-Route::prefix('track')->middleware('CheckToken')->group(function(){
+Route::prefix('track')->middleware(['CheckToken', 'cors'])->group(function(){
     Route::post     ('/start/{task}',   'TrackController@start');
     Route::post     ('/finish/{track}', 'TrackController@finish');
     Route::post     ('/insert/{task}',  'TrackController@insert');
