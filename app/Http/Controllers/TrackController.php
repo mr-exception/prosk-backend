@@ -17,7 +17,7 @@ class TrackController extends Controller
         $tracks = User::get()->tracks();
         
         if($request->has('task_id'))
-            $tracks = $tracks->where($request->input('task_id'));
+            $tracks = $tracks->where('task_id', $request->input('task_id'));
 
         if($request->has('started_min'))
             $tracks = $tracks->where('started_at', '>', $request->input('started_min'));
