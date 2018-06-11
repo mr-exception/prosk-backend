@@ -25,8 +25,10 @@ class Task extends Model
      */
     public function update_times(){
         $first_track = $this->tracks()->orderBy('started_at', 'ASC')->first();
+        if(!$first_track)
+            return;
         $this->started_at = $first_track->started_at;
-        $task->status = Task::STATUS_DOING;
+        $this->status = Task::STATUS_DOING;
         $this->save();
     }
 }
