@@ -25,20 +25,20 @@ Route::prefix('token')->group(function(){
 Route::prefix('task')->middleware(['CheckToken', 'cors'])->group(function(){
     Route::post     ('/',               'TaskController@create');
     
-    Route::get      ('/',               'TaskController@retrive');
-    Route::get      ('/count',          'TaskController@count');
+    Route::post      ('/',               'TaskController@retrive');
+    Route::post      ('/count',          'TaskController@count');
     
     Route::put      ('/{task}',         'TaskController@update');
     Route::delete   ('/{task}',         'TaskController@delete');
 
     Route::post     ('/finish/{task}',  'TaskController@finish');
 
-    Route::get      ('/sum',            'TaskController@sum');
+    Route::post      ('/sum',            'TaskController@sum');
 });
 
 Route::prefix('tag')->middleware(['CheckToken', 'cors'])->group(function(){
     Route::post     ('/{task}',         'TagController@create');
-    Route::get      ('/',               'TagController@retrive');
+    Route::post      ('/',               'TagController@retrive');
 });
 
 Route::prefix('track')->middleware(['CheckToken', 'cors'])->group(function(){
@@ -48,8 +48,8 @@ Route::prefix('track')->middleware(['CheckToken', 'cors'])->group(function(){
     Route::put      ('/{track}',        'TrackController@update');
     Route::delete   ('/{track}',        'TrackController@delete');
 
-    Route::get      ('/',               'TrackController@retrive');
-    Route::get      ('/count',          'TrackController@count');
+    Route::post      ('/',               'TrackController@retrive');
+    Route::post      ('/count',          'TrackController@count');
 
-    Route::get      ('/sum',            'TrackController@sum');
+    Route::post      ('/sum',            'TrackController@sum');
 });

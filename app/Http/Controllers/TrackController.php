@@ -37,9 +37,9 @@ class TrackController extends Controller
         else
             $tracks = $tracks->skip(0);
         
-        if($request->has('limit'))
+        if($request->has('limit')){
             $tracks = $tracks->limit($request->limit);
-        else
+        }else
             $tracks = $tracks->limit(10);
         
         $tracks = $tracks->get();
