@@ -82,7 +82,7 @@ class TaskController extends Controller
         else
             $tasks = $tasks->limit(10);
         
-        $tasks = $tasks->get();
+        $tasks = $tasks->orderBy('status', 'ASC')->get();
         for($i=0; $i<sizeof($tasks); $i++)
             $tasks[$i]->tags = $tasks[$i]->tags;
         return $tasks;
@@ -162,7 +162,8 @@ class TaskController extends Controller
         if($task->user_id != User::get()->id)
             return abort(403);
         $first_track = $task->tracks()->orderBy('finished_at', 'ASC')->first();
-        $task->finished_at = $first_track->finished_at;
+        if($first_track)
+            $task->finished_at = $first_track->finished_at;
         $task->status = Task::STATUS_FINISHED;
         $task->save();
         return [
