@@ -183,8 +183,8 @@ class TaskController extends Controller
 
     public function validateTask(Request $request){
         $validation =  Validator::make($request->all(), [
-            'title'         => 'required|string',
-            'description'   => 'required|string',
+            'title'         => 'required|string|max:32',
+            'description'   => 'required|string|max:256',
             'start_time'    => 'required|date',
             'finish_time'   => 'required|date',
             'poritory'      => 'required|numeric|min:0|max:9',

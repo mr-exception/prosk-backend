@@ -191,7 +191,7 @@ class TrackController extends Controller
 
     private function validateInsertedTask(Request $request){
         $validation = Validator::make($request->all(), [
-            'description'   => 'required|string',
+            'description'   => 'required|string|max:64',
             'started_at'    => 'required|date',
             'finished_at'   => 'required|date|after:started_at',
         ]);
@@ -200,7 +200,7 @@ class TrackController extends Controller
 
     private function validateStartedTask(Request $request){
         $validation = Validator::make($request->all(), [
-            'description'   => 'required|string',
+            'description'   => 'required|string|max:64',
             'started_at'    => 'required|date',
         ]);
         return $this->validationResponse($validation);
@@ -208,7 +208,7 @@ class TrackController extends Controller
     private function validateFinishedTask(Request $request){
         $validation = Validator::make($request->all(), [
             'finished_at'   => 'required|date',
-            'description'   => 'required|string',
+            'description'   => 'required|string|max:64',
         ]);
         return $this->validationResponse($validation);
     }

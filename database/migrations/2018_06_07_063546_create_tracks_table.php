@@ -18,7 +18,7 @@ class CreateTracksTable extends Migration
             $table->dateTime('started_at')->nullable(true);
             $table->dateTime('finished_at')->nullable(true);
             $table->integer('duration')->nullable(true);
-            $table->string('description');
+            $table->string('description', 64);
             $table->integer('task_id')->foreign()->references('id')->on('tasks')->onDelete('cascade');
             $table->timestamps();
         });
