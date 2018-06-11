@@ -28,7 +28,7 @@ class Task extends Model
         if(!$first_track)
             return;
         $this->started_at = $first_track->started_at;
-        $this->status = Task::STATUS_DOING;
+        // $this->status = Task::STATUS_DOING;
         $this->save();
     }
 }
