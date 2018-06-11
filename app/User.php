@@ -49,7 +49,7 @@ class User extends Authenticatable
             ->get();
         return sizeof($tracks);
     }
-    public function validateTrackStartTime($started_at){
+    public function validateTrackStartTime($started_at, $track_id=0){
         $tracks = DB::table('tracks')->join('tasks', 'tasks.id', '=', 'tracks.task_id')
             ->select('tracks.*', 'tasks.user_id')
             ->whereRaw("

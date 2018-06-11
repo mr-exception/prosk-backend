@@ -23,7 +23,7 @@ Route::prefix('token')->group(function(){
 });
 
 Route::prefix('task')->middleware(['CheckToken', 'cors'])->group(function(){
-    Route::post     ('/',               'TaskController@create');
+    Route::post     ('/create',               'TaskController@create');
     
     Route::post      ('/',               'TaskController@retrive');
     Route::post      ('/count',          'TaskController@count');

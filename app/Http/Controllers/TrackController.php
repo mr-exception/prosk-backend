@@ -98,13 +98,14 @@ class TrackController extends Controller
         }
     }
     public function finish(Request $request, Track $track){
-
         $validation = $this->validateFinishedTask($request);
         if(!$validation){
+
             $inputs = $request->all();
             $track->finished_at = $inputs['finished_at'];
-            
+            $track->description = $inputs['description'];
             $track->duration = strtotime($track->finished_at) - strtotime($track->started_at);
+            
             if(User::get()->validateTrackTime($track->started_at, $track->finished_at, $track->id))
                 return [
                     'ok'        => false,
@@ -207,6 +208,7 @@ class TrackController extends Controller
     private function validateFinishedTask(Request $request){
         $validation = Validator::make($request->all(), [
             'finished_at'   => 'required|date',
+            'description'   => 'required|string',
         ]);
         return $this->validationResponse($validation);
     }
